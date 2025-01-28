@@ -250,7 +250,7 @@ LIMIT 10;
 - Consider increasing investment in emerging markets like Mexico, which currently contributes the least among top 10 with only 31 titles per year on average
 - European market presence could be strengthened by expanding beyond current top contributors and exploring partnerships in other European countries
 
-### 4. Top Performing Categories Analysis and Distribution
+### 4. Count of Top Performing Categories
 An analysis of Netflix's content categories, examining the distribution of shows and movies across different genres, categories, or lists.
 
 ```sql
@@ -311,99 +311,52 @@ Top 20 Categories with Volume
 A comprehensive analysis of Netflix’s most prolific directors, comparing historical data with the most recent data in 2021. This highlights top contributors and high-volume content creators.
 
 ```sql
-
--- All time
-
+-- All time vs 2021
 SELECT
   UNNEST(STRING_TO_ARRAY(director, ',')) AS top_directors,
-  COUNT(show_id) AS show_count
+  COUNT(show_id) AS total_count,
+  COUNT(CASE
+    WHEN EXTRACT(YEAR FROM date_added) = '2021' THEN 1
+    ELSE NULL
+  END) AS count_2021
 FROM netflix
 GROUP BY top_directors
-ORDER BY show_count DESC
+ORDER BY total_count DESC
 LIMIT 30;
 ```
-
-| Director | Show Count |
-|----------|------------|
-| Rajiv Chilaka | 22 |
-| Jan Suter | 18 |
-| Raúl Campos | 18 |
-| Suhas Kadav | 16 |
-| Marcus Raboy | 16 |
-| Jay Karas | 15 |
-| Cathy Garcia-Molina | 13 |
-| Jay Chapman | 12 |
-| Martin Scorsese | 12 |
-| Youssef Chahine | 12 |
-| Steven Spielberg | 11 |
-| Don Michael Paul | 10 |
-| David Dhawan | 9 |
-| Shannon Hartman | 9 |
-| Yılmaz Erdoğan | 9 |
-| Quentin Tarantino | 8 |
-| Fernando Ayllón | 8 |
-| Johnnie To | 8 |
-| Ryan Polito | 8 |
-| Troy Miller | 8 |
-| Lance Bangs | 8 |
-| Robert Rodriguez | 8 |
-| Hanung Bramantyo | 8 |
-| Kunle Afolayan | 8 |
-| Hakan Algül | 8 |
-| Prakash Satam | 7 |
-| Omoni Oboli | 7 |
-| Mae Czarina Cruz | 7 |
-| Anurag Kashyap | 7 |
-| Lasse Hallström | 7 |
-
-
-```sql
-
--- For 2021
-
-SELECT
-  UNNEST(STRING_TO_ARRAY(director, ',')) AS top_directors,
-  COUNT(show_id) AS show_count
-FROM netflix
-WHERE
-  EXTRACT(YEAR FROM date_added) = '2021'
-GROUP BY top_directors
-ORDER BY show_count DESC
-LIMIT 30;
-
-```
-| Director | Show Count |
-|----------|------------|
-| Rajiv Chilaka | 17 |
-| Suhas Kadav | 15 |
-| Hidenori Inoue | 7 |
-| Lasse Hallström | 5 |
-| Toshiya Shinohara | 4 |
-| Rathindran R Prasad | 4 |
-| Milan Luthria | 4 |
-| Clint Eastwood | 4 |
-| Kayode Kasum | 4 |
-| Yoshiyuki Tomino | 4 |
-| Jay Roach | 3 |
-| Leigh Janiak | 3 |
-| Jane Campion | 3 |
-| Wolfgang Petersen | 3 |
-| Masahiko Murata | 3 |
-| Adriano Rudiman | 3 |
-| James Wan | 3 |
-| Martin Scorsese | 3 |
-| Paul Thomas Anderson | 3 |
-| Yoshikazu Yasuhiko | 3 |
-| Steven Spielberg | 3 |
-| Cristina Jacob | 3 |
-| Todd Phillips | 3 |
-| Don Michael Paul | 3 |
-| Robert Luketic | 3 |
-| John G. Avildsen | 3 |
-| Soudade Kaadan | 3 |
-| Kenneth Gyang | 2 |
-| Mani Ratnam | 2 |
-| Barry Levinson | 2 |
+**Director's Total Show Contributions vs 2021 Contributions**
+| Director | Total Count | Count 2021 |
+| --- | --- | --- |
+| Rajiv Chilaka | 22 | 17 |
+| Jan Suter | 18 | 0 |
+| Raúl Campos | 18 | 0 |
+| Suhas Kadav | 16 | 15 |
+| Marcus Raboy | 16 | 0 |
+| Jay Karas | 15 | 0 |
+| Cathy Garcia-Molina | 13 | 0 |
+| Jay Chapman | 12 | 0 |
+| Martin Scorsese | 12 | 3 |
+| Youssef Chahine | 12 | 1 |
+| Steven Spielberg | 11 | 3 |
+| Don Michael Paul | 10 | 3 |
+| David Dhawan | 9 | 1 |
+| Shannon Hartman | 9 | 0 |
+| Yılmaz Erdoğan | 9 | 2 |
+| Quentin Tarantino | 8 | 1 |
+| Fernando Ayllón | 8 | 1 |
+| Johnnie To | 8 | 0 |
+| Ryan Polito | 8 | 0 |
+| Troy Miller | 8 | 2 |
+| Lance Bangs | 8 | 0 |
+| Robert Rodriguez | 8 | 1 |
+| Hanung Bramantyo | 8 | 2 |
+| Kunle Afolayan | 8 | 0 |
+| Hakan Algül | 8 | 2 |
+| Prakash Satam | 7 | 2 |
+| Omoni Oboli | 7 | 0 |
+| Mae Czarina Cruz | 7 | 2 |
+| Anurag Kashyap | 7 | 0 |
+| Lasse Hallström | 7 | 5 |
 
 **Key Findings:**
 
