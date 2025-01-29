@@ -190,36 +190,24 @@ LIMIT 10;
 ```sql
 WITH countries_unnested AS (
   SELECT
-    UNNEST(STRING_TO_ARRAY(country, ',')) AS country_group,
+    TRIM(UNNEST(STRING_TO_ARRAY(country, ','))) AS country_group,
     show_id,
-    date_added
+    EXTRACT(YEAR FROM date_added) AS year_added
   FROM netflix
 )
 
 SELECT
-  TRIM(country_group) AS top_10_countries,
-  COUNT (  -- Takes the average.
-	  CASE
-	    WHEN EXTRACT(YEAR FROM date_added) >= '2017'
-	    THEN show_id
-	    ELSE NULL
-    END)/5 AS avg_per_year,
-  COUNT (  -- Gives the 2017 count.
-    CASE
-      WHEN EXTRACT(YEAR FROM date_added) = '2017'
-      THEN show_id
-      ELSE NULL
-    END) AS year_2017,
-  COUNT (  -- Gives the 2018 count. 
-    CASE
-      WHEN EXTRACT(YEAR FROM date_added) = '2018'
-      THEN show_id
-      ELSE NULL
-    END) AS year_2018,
-  -- The full code continues until 2021, please see for reference.
+  country_group,
+  COUNT(*) FILTER(WHERE year_added = '2017') AS year_2017,
+  COUNT(*) FILTER(WHERE year_added = '2018') AS year_2018,
+  COUNT(*) FILTER(WHERE year_added = '2019') AS year_2019,
+  COUNT(*) FILTER(WHERE year_added = '2020') AS year_2020,
+  COUNT(*) FILTER(WHERE year_added = '2021') AS year_2021,
+  COUNT(*)/5 AS average,
+  COUNT(*) AS total
 FROM countries_unnested
-GROUP BY 1
-ORDER BY 2 DESC
+GROUP BY country_group
+ORDER BY COUNT(*) DESC
 LIMIT 10;
 ```
 
@@ -235,6 +223,42 @@ LIMIT 10;
 | Spain | 42 | 33 | 43 | 53 | 43 | 42 |
 | Germany | 42 | 40 | 58 | 45 | 34 | 33 |
 | Mexico | 31 | 21 | 30 | 39 | 31 | 36 |
+
+**Comparison of Top 10 Contributors to Global Averages**
+Global Averages are computed from the top 30 Contributors
+
+```sql
+SELECT --- Global Averages (from Top 30 countries)
+  'Global Average' AS country_group,
+  ROUND(AVG(year_2017)) AS avg_2017,
+  ROUND(AVG(year_2018)) AS avg_2018,
+  ROUND(AVG(year_2019)) AS avg_2019,
+  ROUND(AVG(year_2020)) AS avg_2020,
+  ROUND(AVG(year_2021)) AS avg_2021,
+  ROUND(AVG(average)) AS avg_per_year,
+  ROUND(SUM(total) / 30.0) AS avg_total
+FROM trend_top_30_countries
+
+UNION ALL
+
+SELECT *
+FROM trend_top_30_countries
+LIMIT 10;
+```
+
+| Country Group | 2017 | 2018 | 2019 | 2020 | 2021 | Avg Per Year | Total |
+|--------------|------|------|------|------|------|--------------|-------|
+| Global Average | 43 | 60 | 71 | 69 | 46 | 62 | 311 |
+| United States | 462 | 600 | 856 | 828 | 627 | 738 | 3690 |
+| India | 162 | 349 | 218 | 199 | 105 | 209 | 1046 |
+| United Kingdom | 134 | 147 | 191 | 146 | 120 | 161 | 806 |
+| Canada | 71 | 81 | 84 | 110 | 59 | 89 | 445 |
+| France | 53 | 64 | 79 | 97 | 60 | 79 | 393 |
+| Japan | 37 | 44 | 74 | 79 | 53 | 64 | 318 |
+| Spain | 42 | 43 | 53 | 43 | 33 | 46 | 232 |
+| South Korea | 43 | 33 | 59 | 56 | 29 | 46 | 231 |
+| Germany | 33 | 34 | 45 | 58 | 40 | 45 | 226 |
+
 
 **Key Findings:**
 
@@ -628,6 +652,119 @@ LIMIT 20;
 - Strong international content presence indicates successful global market penetration strategy
 - Stable children's content suggests strategic importance of family viewership
 
+### #9 Count of Missing Data
+
+This analysis examines the completeness of Netflix's content metadata across key fields, helping identify potential gaps in data quality that could impact user experience and content discovery.
+
+```sql
+SELECT
+  COUNT(*) FILTER(WHERE director IS NULL OR TRIM(director) = '') AS missing_director,
+  COUNT(*) FILTER(WHERE casting IS NULL OR TRIM(casting) = '') AS missing_cast,
+  COUNT(*) FILTER(WHERE country IS NULL OR TRIM(country) = '') AS missing_country,
+  COUNT(*) FILTER(WHERE listed_in IS NULL OR TRIM(listed_in) = '') AS missing_category,
+  COUNT(*) FILTER(WHERE rating IS NULL OR TRIM(rating) = '') AS missing_rating
+FROM netflix;
+```
+
+| Column | Missing Director | Missing Cast | Missing Country | Missing Category | Missing Rating |
+| --- | --- | --- | --- | --- | --- |
+| Count | 2634 | 825 | 831 | 0 | 4 |
+
+**Key Analysis:**
+
+- Director information is missing for 2,634 titles, representing the largest metadata gap, indicating a need for improved metadata collection for new content acquisitions.
+- Cast and country information show similar gaps (825 and 831 missing entries respectively), which may affect international content discovery and actor-based recommendations.
+- Category and rating fields are nearly complete, with only 4 missing ratings and no missing categories
+
+### #10 Netflix Cast Analysis: Top 100 All-time Contributors and Emerging Contributors (2019-2021)
+
+This analysis examines Netflix's top cast contributors based on their all-time appearances and identifies performers showing consistent growth over three years. Further analysis of this data, along with actors' performance in audience sentiment metrics, can reveal valuable relationships and help identify emerging and all-time stars for future Netflix Originals.
+
+```sql
+-- Top 100 Contibutors of All-Time
+SELECT
+  TRIM(UNNEST(STRING_TO_ARRAY(casting, ', '))) AS actors,
+  COUNT(show_id) AS show_count
+FROM netflix
+GROUP BY TRIM(UNNEST(STRING_TO_ARRAY(casting, ', ')))
+ORDER BY show_count DESC
+LIMIT 20; -- See Solution of Business Problems for Full
+```
+| Actor | Show Count |
+| --- | --- |
+| Anupam Kher | 43 |
+| Shah Rukh Khan | 35 |
+| Julie Tejwani | 33 |
+| Naseeruddin Shah | 32 |
+| Takahiro Sakurai | 32 |
+| Rupa Bhimani | 31 |
+| Akshay Kumar | 30 |
+| Om Puri | 30 |
+| Yuki Kaji | 29 |
+| Paresh Rawal | 28 |
+| Amitabh Bachchan | 28 |
+| Boman Irani | 27 |
+| Rajesh Kava | 26 |
+| Vincent Tong | 26 |
+| Andrea Libman | 25 |
+| Kareena Kapoor | 25 |
+| Samuel L. Jackson | 24 |
+| John Cleese | 24 |
+| Fred Tatasciore | 23 |
+| Jigna Bhardwaj | 23 |
+
+```sql
+-- Top 100 Increasing Contributors (Shorthand Version)
+
+WITH top_contributors AS (
+  SELECT
+    TRIM(UNNEST(STRING_TO_ARRAY(casting, ', '))) AS actors,
+    show_id,
+    EXTRACT(YEAR FROM date_added) AS year_added
+  FROM netflix
+)
+
+SELECT
+  actors,
+  COUNT(show_id) AS total_count
+FROM top_contributors
+GROUP BY actors
+HAVING
+  COUNT(*) FILTER(WHERE year_added = 2019) <
+  COUNT(*) FILTER(WHERE year_added = 2020) AND
+  COUNT(*) FILTER(WHERE year_added = 2020) <
+  COUNT(*) FILTER(WHERE year_added = 2021)
+ORDER BY total_count DESC
+LIMIT 20; -- See Solution of Business Problems for Full
+```
+| Actor | Total Count |
+| --- | --- |
+| Rajesh Kava | 26 |
+| Jigna Bhardwaj | 23 |
+| Fred Tatasciore | 23 |
+| Fortune Feimster | 18 |
+| Blossom Chukwujekwu | 16 |
+| Grey Griffin | 15 |
+| Chris Rock | 15 |
+| Demet Akbağ | 14 |
+| Kazuhiko Inoue | 14 |
+| Tina Mba | 13 |
+| Glenn Close | 12 |
+| London Hughes | 12 |
+| William H. Macy | 12 |
+| Danny McBride | 12 |
+| Houko Kuwashima | 12 |
+| Justin Long | 12 |
+| Robert Pattinson | 12 |
+| Jessica Chastain | 11 |
+| Toshiyuki Morikawa | 11 |
+| Emile Hirsch | 11 |
+
+**Key Analysis:**
+
+- Indian actors dominate the all-time appearances list, with Anupam Kher (43 shows) and Shah Rukh Khan (35 shows) leading, suggesting significant investment in Bollywood content and/or concentrated talent for their category.
+- Voice actors feature prominently in both lists, including Julie Tejwani, Takahiro Sakurai, and Fred Tatasciore, revealing the balanced importance of voice actors and traditional performers.
+- The emerging contributors list shows more diversity in terms of both geography and content type, from comedy (Fortune Feimster) to dramatic actors (Jessica Chastain).
 
 ## Findings and Conclusion
 
