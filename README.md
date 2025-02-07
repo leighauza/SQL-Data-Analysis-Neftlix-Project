@@ -667,7 +667,7 @@ LIMIT 30;
 
 The analysis reveals Netflix's strong investment in <u>Indian content</u> and talent diversity. Anupam Kher and Shah Rukh Khan lead with 43 and 35 shows respectively, demonstrating Netflix's significant commitment to Bollywood content. The platform maintains a balanced approach by featuring both traditional performers and <u>voice actors</u> like Julie Tejwani and Takahiro Sakurai. The recently added contributors list shows more diversity in terms of both geography and content type, from comedy (Fortune Feimster) to dramatic actors (Jessica Chastain).
 
-### <u>Count of Missing Data</u>
+## Count of Missing Data
 
 This examines the completeness of Netflix's content metadata across key fields, helping identify potential gaps in data quality that could impact user experience and content discovery.
 
