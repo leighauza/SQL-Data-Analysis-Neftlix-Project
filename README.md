@@ -99,7 +99,7 @@ ORDER BY
   type;
 ```
 
-[Movies vs. TV Shows Trend](/Users/leilaauza/Documents/Data Analysis/SQL Projects/SQL Data Analysis Neftlix Project/assets/movies_vs_tvshows.png)
+![Movies vs. TV Shows Trend](assets/movies_vs_tvshows.png)
 
 In 2021, both movies and TV shows experienced a significant reduction in additions, likely due to production disruptions during the COVID-19 pandemic. This raises questions about the resilience of acquisition strategies and the importance of maintaining a balanced reliance on both existing and newly produced content. Movies showed greater vulnerability, experiencing a steeper decline and higher volatility compared to TV shows.
 
@@ -167,7 +167,7 @@ ORDER BY total_count DESC
 LIMIT 10;
 ```
 
-[Top 10 Movie Categories](/Users/leilaauza/Documents/Data Analysis/SQL Projects/SQL Data Analysis Neftlix Project/assets/top_10_movie.png)
+![Top 10 Movie Categories](assets/top_10_movie.png)
 
 ```sql
 WITH unnested_categories AS (
@@ -188,7 +188,7 @@ ORDER BY total_count DESC
 LIMIT 10;
 ```
 
-[Top 10 TV Show Categories](/Users/leilaauza/Documents/Data Analysis/SQL Projects/SQL Data Analysis Neftlix Project/assets/top_10_tv_show.png)
+![Top 10 TV Show Categories](assets/top_10_tv_show.png)
 
 
 <u>International content</u> dominates across both movies (2,752 titles) and TV shows (1,351 titles), demonstrating the effectiveness of Netflix’s global strategy. The platform’s ability to secure high-performing international titles underscores the success of its strategy. To sustain this momentum, Netflix can continue expanding <u>international partnerships</u> with distributors and producers in key markets (See Analysis: Section 3 for Key Countries).
@@ -246,7 +246,7 @@ LIMIT 20;
 | Romantic TV Shows | 90 | 60 | 49 | 338 |
 | Stand-Up Comedy | 65 | 48 | 17 | 334 |
 
-[Top 20 Categories](/Users/leilaauza/Documents/Data Analysis/SQL Projects/SQL Data Analysis Neftlix Project/assets/top_20_categories.png)
+![Top 20 Categories](assets/top_20_categories.png)
 
 Analysis of Netflix's content library from 2019-2021 reveals clear category leaders, with <u>International Movies (2,624), Dramas (1,600), and Comedies (1,210)</u> comprising the majority of content. However, a notable decline in International Movies from 583 (2019) to 392 (2021) indicates a potential strategic shift.
 
@@ -293,7 +293,7 @@ JOIN top_ratings t ON y.rating = t.rating
 ORDER BY y.rating, y.year_added;
 ```
 
-[Top 5 Ratings Across Movies](/Users/leilaauza/Documents/Data Analysis/SQL Projects/SQL Data Analysis Neftlix Project/assets/movie_rating.png)
+![Top 5 Ratings Across Movies](assets/movie_rating.png)
 
 ```sql
 -- TV Shows
@@ -329,7 +329,7 @@ JOIN top_ratings t ON y.rating = t.rating
 ORDER BY y.rating, y.year_added;
 ```
 
-[Top 5 Ratings Across TV Shows](/Users/leilaauza/Documents/Data Analysis/SQL Projects/SQL Data Analysis Neftlix Project/assets/top_10_tv_show.png)
+![Top 5 Ratings Across TV Shows](assets/tv_show_rating.png)
 
 Analysis of Netflix's content ratings reveals a strong focus on mature content, with <u>TV-MA</u> dominating both categories: 2,062 titles for movies and 1,145 for TV shows. While TV-MA movie content peaked in 2019 before declining in 2021, TV shows grew significantly in this rating, indicating a strategic shift towards longer formats and higher user retention.
 
@@ -392,7 +392,7 @@ ORDER BY show_count DESC;
 
 ```
 
-Movies: Distribution of Runtime
+**Movies: Distribution of Runtime**
 
 | Duration Range | Show Count | Percentage |
 |----------------|------------|------------|
@@ -403,7 +403,7 @@ Movies: Distribution of Runtime
 | 2.5 - 3 hours | 198 | ~2% |
 | 3+ hours | 50 | ~1% |
 
-TV Shows: Distribution of Runtime
+**TV Shows: Distribution of Runtime**
 
 | Season Range | Show Count | Percentage |
 | --- | --- | --- |
@@ -526,7 +526,7 @@ FROM trend_top_30_countries
 LIMIT 10;
 ```
 
-[Countries' Contribution with Global Averages](/Users/leilaauza/Documents/Data Analysis/SQL Projects/SQL Data Analysis Neftlix Project/assets/global_averages.png)
+![Countries' Contribution with Global Averages](assets/global_averages.png)
 
 | Country Group | 2017 | 2018 | 2019 | 2020 | 2021 | Avg Per Year | Total |
 |--------------|------|------|------|------|------|--------------|-------|
